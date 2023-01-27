@@ -1,0 +1,184 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="_9_0_ConnetSQLDataBase" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property Name="in_WhereID" Type="InArgument(x:String)" />
+    <x:Property Name="in_ColumnEstado" Type="InArgument(x:String)" />
+    <x:Property Name="in_ValueColumnEstado" Type="InArgument(x:String)" />
+    <x:Property Name="in_ColumnPagina" Type="InArgument(x:String)" />
+    <x:Property Name="in_ValueColumnPagina" Type="InArgument(x:String)" />
+    <x:Property Name="in_TablaSql" Type="InArgument(x:String)" />
+    <x:Property Name="in_Set" Type="InArgument(x:String)" />
+  </x:Members>
+  <mva:VisualBasic.Settings>
+    <x:Null />
+  </mva:VisualBasic.Settings>
+  <sap:VirtualizedContainerService.HintSize>1794,1822</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>_9_0_ConnetSQLDataBase_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="31">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>UiPath.Database</x:String>
+      <x:String>System.ComponentModel</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
+      <x:String>System.Xml.Serialization</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>UiPath.DataTableUtilities</x:String>
+      <x:String>System.Activities.DynamicUpdate</x:String>
+      <x:String>UiPath.Database.Activities</x:String>
+      <x:String>UiPath.Excel</x:String>
+      <x:String>UiPath.Excel.Activities</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="32">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.Database</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization</AssemblyReference>
+      <AssemblyReference>UiPath.Database.Activities</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>Microsoft.Bcl.AsyncInterfaces</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>UiPath.Mail</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
+      <AssemblyReference>UiPath.OCR.Activities.Design</AssemblyReference>
+      <AssemblyReference>UiPath.UIAutomationCore</AssemblyReference>
+      <AssemblyReference>UiPath.MicrosoftOffice365.Activities.Design</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities.Design</AssemblyReference>
+      <AssemblyReference>UiPath.Excel.Activities</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:Annotation.AnnotationText="INSERT INTO [dbo].[Resultados] (Nombre, Url, Cargo, Ubicacion)&#xA;VALUES ('x', 'x','x', 'Test');&#xA;&#xA;&#xA;&#xA;&quot;UPDATE [dbo].[&quot;+in_TablaSql+&quot;] &#xA;&#xA;Set &quot; + in_ColumnEstado + &quot; = '&quot; + in_ValueColumnEstado + &quot;', &quot; + in_ColumnPagina + &quot; = '&quot; + in_ValueColumnPagina + &quot;' &#xA;&#xA;&quot; + in_ColumnEstado + &quot; = '&quot; + in_ValueColumnEstado + &quot;', &quot; + in_ColumnPagina + &quot; = '&quot; + in_ValueColumnPagina + &quot;' &#xA;&#xA;&#xA;&#xA;&#xA;WHERE id = '&quot; + in_WhereID + &quot;'&quot;" DisplayName="3.0.0_UpdateDT_BD_SQL" sap:VirtualizedContainerService.HintSize="596,1757" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="554,91" sap2010:WorkflowViewState.IdRef="LogMessage_1" Message="[&quot;Starting | 3.0.0_UpdateDT_BD_SQL&quot;]" />
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="554,91" sap2010:WorkflowViewState.IdRef="LogMessage_4" Message="[&quot;in_ColumnName:&quot;+in_ColumnEstado+ vbCrLf+&#xA;&quot;in_ValueColumnName:&quot;+in_ValueColumnEstado+ vbCrLf+&#xA;&quot;in_WhereID:&quot;+in_WhereID]" />
+    <Sequence DisplayName="Connection" sap:VirtualizedContainerService.HintSize="554,1003" sap2010:WorkflowViewState.IdRef="Sequence_4">
+      <Sequence.Variables>
+        <Variable x:TypeArguments="sd:DataTable" Name="DataTableSelectSQL" />
+        <Variable x:TypeArguments="ui:DatabaseConnection" Name="StrConecctionSQL" />
+      </Sequence.Variables>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <ui:DatabaseTransaction ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="server: codenulldevsql.database.windows.net&#xA;dbname: mqldb&#xA;user: mqluser&#xA;pass: *&#xA;userowner: hola@wilsondoria.com" DatabaseConnection="[StrConecctionSQL]" DisplayName="Start Transaction" sap:VirtualizedContainerService.HintSize="512,911" sap2010:WorkflowViewState.IdRef="DatabaseTransaction_1" ProviderName="System.Data.SqlClient" UseTransaction="True" ConnectionString="Data Source=codenulldevsql.database.windows.net;Initial Catalog=mqldb;Persist Security Info=True;User ID=mqluser;Password=Mqle.1234!">
+        <ui:DatabaseTransaction.Body>
+          <Sequence DisplayName="Do" sap:VirtualizedContainerService.HintSize="478,715" sap2010:WorkflowViewState.IdRef="Sequence_2">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="436,91" sap2010:WorkflowViewState.IdRef="LogMessage_6" Message="[&quot;UPDATE [dbo].[&quot;+in_TablaSql+&quot;] Set &quot; + in_ColumnEstado + &quot; = '&quot; + in_ValueColumnEstado + &quot;', &quot; + in_ColumnPagina + &quot; = '&quot; + in_ValueColumnPagina + &quot;' WHERE id = '&quot; + in_WhereID + &quot;'&quot;]" />
+            <ui:ExecuteQuery ContinueOnError="{x:Null}" DataTable="{x:Null}" TimeoutMS="{x:Null}" CommandType="Text" DisplayName="Execute Query" ExistingDbConnection="[StrConecctionSQL]" sap:VirtualizedContainerService.HintSize="436,88" sap2010:WorkflowViewState.IdRef="ExecuteQuery_4" Sql="[&quot;UPDATE [dbo].[&quot;+in_TablaSql+&quot;] Set &quot; + in_ColumnEstado + &quot; = '&quot; + in_ValueColumnEstado + &quot;', &quot; + in_ColumnPagina + &quot; = '&quot; + in_ValueColumnPagina + &quot;' WHERE id = '&quot; + in_WhereID + &quot;'&quot;]">
+              <ui:ExecuteQuery.Parameters>
+                <InArgument x:TypeArguments="x:String" x:Key="in_ColumnName">[in_ColumnEstado]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_WhereID">[in_WhereID]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnName">[in_ValueColumnEstado]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_ColumnPagina">[in_ColumnPagina]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnPagina">[in_ValueColumnPagina]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_TablaSql">[in_TablaSql]</InArgument>
+              </ui:ExecuteQuery.Parameters>
+            </ui:ExecuteQuery>
+            <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="436,364" sap2010:WorkflowViewState.IdRef="CommentOut_1">
+              <ui:CommentOut.Body>
+                <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="376,286" sap2010:WorkflowViewState.IdRef="Sequence_5">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <Sequence DisplayName="UpdateDinamico" sap:VirtualizedContainerService.HintSize="334,66" sap2010:WorkflowViewState.IdRef="Sequence_6">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,93" sap2010:WorkflowViewState.IdRef="LogMessage_5" Message="[&quot;UPDATE [dbo].[&quot;+in_TablaSql+&quot;] Set &quot; + in_Set + &quot;' WHERE id = '&quot; + in_WhereID + &quot;'&quot;]" />
+                    <ui:ExecuteQuery ContinueOnError="{x:Null}" DataTable="{x:Null}" TimeoutMS="{x:Null}" CommandType="Text" DisplayName="Execute Query" ExistingDbConnection="[StrConecctionSQL]" sap:VirtualizedContainerService.HintSize="334,88" sap2010:WorkflowViewState.IdRef="ExecuteQuery_2" Sql="[&quot;UPDATE [dbo].[&quot;+in_TablaSql+&quot;] Set &quot; + in_Set + &quot;' WHERE id = '&quot; + in_WhereID + &quot;'&quot;]">
+                      <ui:ExecuteQuery.Parameters>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_ColumnName">[in_ColumnEstado]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_WhereID">[in_WhereID]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnName">[in_ValueColumnEstado]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_ColumnPagina">[in_ColumnPagina]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnPagina">[in_ValueColumnPagina]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_TablaSql">[in_TablaSql]</InArgument>
+                        <InArgument x:TypeArguments="x:String" x:Key="in_Set">[in_Set]</InArgument>
+                      </ui:ExecuteQuery.Parameters>
+                    </ui:ExecuteQuery>
+                  </Sequence>
+                  <ui:ExecuteQuery ContinueOnError="{x:Null}" DataTable="{x:Null}" TimeoutMS="{x:Null}" CommandType="Text" DisplayName="Execute Query" ExistingDbConnection="[StrConecctionSQL]" sap:VirtualizedContainerService.HintSize="334,88" sap2010:WorkflowViewState.IdRef="ExecuteQuery_3" Sql="[&quot;UPDATE [dbo].[Busquedas] Set &quot; + in_ColumnEstado + &quot; = '&quot; + in_ValueColumnEstado + &quot;', &quot; + in_ColumnPagina + &quot; = '&quot; + in_ValueColumnPagina + &quot;' WHERE id = '&quot; + in_WhereID + &quot;'&quot;]">
+                    <ui:ExecuteQuery.Parameters>
+                      <InArgument x:TypeArguments="x:String" x:Key="in_ColumnName">[in_ColumnEstado]</InArgument>
+                      <InArgument x:TypeArguments="x:String" x:Key="in_WhereID">[in_WhereID]</InArgument>
+                      <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnName">[in_ValueColumnEstado]</InArgument>
+                      <InArgument x:TypeArguments="x:String" x:Key="in_ColumnPagina">[in_ColumnPagina]</InArgument>
+                      <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnPagina">[in_ValueColumnPagina]</InArgument>
+                    </ui:ExecuteQuery.Parameters>
+                  </ui:ExecuteQuery>
+                </Sequence>
+              </ui:CommentOut.Body>
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+            </ui:CommentOut>
+          </Sequence>
+        </ui:DatabaseTransaction.Body>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </ui:DatabaseTransaction>
+    </Sequence>
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="554,93" sap2010:WorkflowViewState.IdRef="LogMessage_2" Message="[&quot;Ending | 3.0.0_UpdateDT_BD_SQL&quot;]" />
+  </Sequence>
+</Activity>

@@ -1,0 +1,1192 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Process" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <x:Members>
+    <x:Property sap2010:Annotation.AnnotationText="Transaction item to be processed." Name="in_TransactionItem" Type="InArgument(sd:DataRow)" />
+    <x:Property sap2010:Annotation.AnnotationText="Dictionary structure to store configuration data of the process (settings, constants and assets)." Name="in_Config" Type="InArgument(scg:Dictionary(x:String, x:Object))" />
+    <x:Property Name="in_TransactionNumber" Type="InArgument(x:Int32)" />
+    <x:Property Name="in_limiteMaximoPaginas" Type="InArgument(x:Int32)" />
+    <x:Property Name="in_CantidadPaginasBusqueda" Type="InArgument(x:Int32)" />
+  </x:Members>
+  <mva:VisualBasic.Settings>
+    <x:Null />
+  </mva:VisualBasic.Settings>
+  <sap:VirtualizedContainerService.HintSize>1794,8145</sap:VirtualizedContainerService.HintSize>
+  <sap2010:WorkflowViewState.IdRef>ProcessTransaction_1</sap2010:WorkflowViewState.IdRef>
+  <TextExpression.NamespacesForImplementation>
+    <scg:List x:TypeArguments="x:String" Capacity="33">
+      <x:String>System.Activities</x:String>
+      <x:String>System.Activities.Statements</x:String>
+      <x:String>System.Activities.Expressions</x:String>
+      <x:String>System.Activities.Validation</x:String>
+      <x:String>System.Activities.XamlIntegration</x:String>
+      <x:String>Microsoft.VisualBasic</x:String>
+      <x:String>Microsoft.VisualBasic.Activities</x:String>
+      <x:String>System</x:String>
+      <x:String>System.Collections</x:String>
+      <x:String>System.Collections.Generic</x:String>
+      <x:String>System.Data</x:String>
+      <x:String>System.Diagnostics</x:String>
+      <x:String>System.Drawing</x:String>
+      <x:String>System.IO</x:String>
+      <x:String>System.Linq</x:String>
+      <x:String>System.Net.Mail</x:String>
+      <x:String>System.Xml</x:String>
+      <x:String>System.Xml.Linq</x:String>
+      <x:String>UiPath.Core</x:String>
+      <x:String>UiPath.Core.Activities</x:String>
+      <x:String>System.Windows.Markup</x:String>
+      <x:String>System.Collections.ObjectModel</x:String>
+      <x:String>System.Activities.DynamicUpdate</x:String>
+      <x:String>System.Reflection</x:String>
+      <x:String>System.Runtime.InteropServices</x:String>
+      <x:String>System.ComponentModel</x:String>
+      <x:String>System.Runtime.Serialization</x:String>
+      <x:String>System.Xml.Serialization</x:String>
+      <x:String>UiPath.DataTableUtilities</x:String>
+      <x:String>UiPath.UIAutomationNext.Enums</x:String>
+      <x:String>UiPath.Core.Activities.Orchestrator</x:String>
+      <x:String>Microsoft.VisualBasic.CompilerServices</x:String>
+      <x:String>System.Net</x:String>
+    </scg:List>
+  </TextExpression.NamespacesForImplementation>
+  <TextExpression.ReferencesForImplementation>
+    <scg:List x:TypeArguments="AssemblyReference" Capacity="30">
+      <AssemblyReference>System.Activities</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualBasic</AssemblyReference>
+      <AssemblyReference>mscorlib</AssemblyReference>
+      <AssemblyReference>System.Data</AssemblyReference>
+      <AssemblyReference>System</AssemblyReference>
+      <AssemblyReference>System.Drawing</AssemblyReference>
+      <AssemblyReference>System.Core</AssemblyReference>
+      <AssemblyReference>System.Xml</AssemblyReference>
+      <AssemblyReference>System.Xml.Linq</AssemblyReference>
+      <AssemblyReference>PresentationFramework</AssemblyReference>
+      <AssemblyReference>WindowsBase</AssemblyReference>
+      <AssemblyReference>PresentationCore</AssemblyReference>
+      <AssemblyReference>System.Xaml</AssemblyReference>
+      <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
+      <AssemblyReference>System.ServiceModel</AssemblyReference>
+      <AssemblyReference>Microsoft.VisualStudio.Services.Common</AssemblyReference>
+      <AssemblyReference>UiPath.System.Activities</AssemblyReference>
+      <AssemblyReference>UiPath.UiAutomation.Activities</AssemblyReference>
+      <AssemblyReference>System.Data.DataSetExtensions</AssemblyReference>
+      <AssemblyReference>Microsoft.Bcl.AsyncInterfaces</AssemblyReference>
+      <AssemblyReference>System.ValueTuple</AssemblyReference>
+      <AssemblyReference>UiPath.OCR.Activities.Design</AssemblyReference>
+      <AssemblyReference>System.Memory</AssemblyReference>
+      <AssemblyReference>UiPath.Excel</AssemblyReference>
+      <AssemblyReference>UiPath.UIAutomationCore</AssemblyReference>
+      <AssemblyReference>System.Runtime.Serialization</AssemblyReference>
+      <AssemblyReference>UiPath.Mail</AssemblyReference>
+      <AssemblyReference>UiPath.MicrosoftOffice365.Activities.Design</AssemblyReference>
+      <AssemblyReference>UiPath.UIAutomationNext</AssemblyReference>
+      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
+    </scg:List>
+  </TextExpression.ReferencesForImplementation>
+  <Sequence sap2010:Annotation.AnnotationText="Invoke major steps of the business process, which are usually implemented by multiple subworkflows.&#xA;&#xA;If a BusinessRuleException is thrown, the transaction is skipped. &#xA;If another kind of exception occurs, the current transaction can be retried. " DisplayName="Process" sap:VirtualizedContainerService.HintSize="1412,8080" sap2010:WorkflowViewState.IdRef="Sequence_1">
+    <Sequence.Variables>
+      <Variable x:TypeArguments="x:String" Name="StringArray" />
+      <Variable x:TypeArguments="sd:DataTable" Name="BusquedasXUsuario" />
+      <Variable x:TypeArguments="sd:DataTable" Name="ResultadosContactar" />
+      <Variable x:TypeArguments="x:Boolean" Name="LoginExist" />
+      <Variable x:TypeArguments="x:Int32" Name="CantidadContactadosDia" />
+      <Variable x:TypeArguments="x:Boolean" Name="Boo_CantidadContactadosDia" />
+      <Variable x:TypeArguments="x:Boolean" Name="Boo_UltimaVezContactar" />
+      <Variable x:TypeArguments="sd:DataTable" Name="CantidadInvitacionesXBusqueda" />
+      <Variable x:TypeArguments="x:Int32" Name="CantidadResultadosEncontrados" />
+      <Variable x:TypeArguments="x:Int32" Name="in_CantidadInvitacionesXBusqueda" />
+      <Variable x:TypeArguments="x:String" Name="UltimaVezContactar" />
+    </Sequence.Variables>
+    <sap:WorkflowViewStateService.ViewState>
+      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+      </scg:Dictionary>
+    </sap:WorkflowViewStateService.ViewState>
+    <ui:Comment DisplayName="Comment (placeholder)" sap:VirtualizedContainerService.HintSize="1370,55" sap2010:WorkflowViewState.IdRef="Comment_4" Text="-Usuario" />
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="1370,91" sap2010:WorkflowViewState.IdRef="LogMessage_46" Message="[&quot;_________________________________&quot;+in_TransactionItem(&quot;Nombre&quot;).ToString]" />
+    <ui:LogMessage sap2010:Annotation.AnnotationText="&quot;PROCESANDO USUARIO....&quot;+&#xA;&quot;Id: &quot;+in_TransactionItem(&quot;Id&quot;).ToString&#xA;&quot;Nombre: &quot;+in_TransactionItem(&quot;Nombre&quot;).ToString&#xA;&quot;Apellidos: &quot;+in_TransactionItem(&quot;Apellidos&quot;).ToString&#xA;&quot;Clave: &quot;+in_TransactionItem(&quot;Clave&quot;).ToString&#xA;in_TransactionItem(&quot;Identificacion&quot;).ToString &#xA;&quot;Correo: &quot;+in_TransactionItem(&quot;Correo&quot;).ToString&#xA;in_TransactionItem(&quot;TipoUsuario&quot;).ToString&#xA;&quot;EmailRed: &quot;+in_TransactionItem(&quot;EmailRed&quot;).ToString&#xA;&quot;ClaveRed: &quot;+in_TransactionItem(&quot;ClaveRed&quot;).ToString&#xA;&quot;UltimaVezContactar: &quot;+in_TransactionItem(&quot;UltimaVezContactar&quot;).ToString&#xA;" DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="1370,298" sap2010:WorkflowViewState.IdRef="LogMessage_6" Level="Warn" Message="[&quot;PROCESANDO USUARIO....&quot;+&#xA;&quot;Id: &quot;+in_TransactionItem(&quot;Id&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;Nombre: &quot;+in_TransactionItem(&quot;Nombre&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;Apellidos: &quot;+in_TransactionItem(&quot;Apellidos&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;Clave: &quot;+in_TransactionItem(&quot;Clave&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;Identificacion: &quot;+in_TransactionItem(&quot;Identificacion&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;Correo: &quot;+in_TransactionItem(&quot;Correo&quot;).ToString+&quot;  ||  &quot;+&#xA;&quot;TipoUsuario: &quot;+in_TransactionItem(&quot;TipoUsuario&quot;).ToString+&quot;  ||  &quot;+&#xA;&quot;EmailRed: &quot;+in_TransactionItem(&quot;EmailRed&quot;).ToString+&quot;  ||  &quot;+&#xA;&quot;ClaveRed: &quot;+in_TransactionItem(&quot;ClaveRed&quot;).ToString+&quot;  ||  &quot;+&#xA;&quot;UltimaVezContactar: &quot;+in_TransactionItem(&quot;UltimaVezContactar&quot;).ToString+&quot;  ||  &quot;]">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:LogMessage>
+    <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="1370,98" sap2010:WorkflowViewState.IdRef="MultipleAssign_1">
+      <ui:MultipleAssign.AssignOperations>
+        <scg:List x:TypeArguments="ui:AssignOperation" Capacity="4">
+          <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_1">
+            <ui:AssignOperation.To>
+              <OutArgument x:TypeArguments="x:Boolean">[LoginExist]</OutArgument>
+            </ui:AssignOperation.To>
+            <ui:AssignOperation.Value>
+              <InArgument x:TypeArguments="x:Boolean">False</InArgument>
+            </ui:AssignOperation.Value>
+          </ui:AssignOperation>
+        </scg:List>
+      </ui:MultipleAssign.AssignOperations>
+    </ui:MultipleAssign>
+    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="Para el usuario FK = Id" DisplayName="Invoke 6.0._QueryBD_SQL_GetBusquedas workflow" sap:VirtualizedContainerService.HintSize="1370,143" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_13" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\6.0._QueryBD_SQL_GetBusquedas.xaml">
+      <ui:InvokeWorkflowFile.Arguments>
+        <OutArgument x:TypeArguments="sd:DataTable" x:Key="out_DataTableSelectSQL">[BusquedasXUsuario]</OutArgument>
+        <InArgument x:TypeArguments="x:String" x:Key="in_UsuarioFK">[in_TransactionItem("Id").ToString]</InArgument>
+      </ui:InvokeWorkflowFile.Arguments>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:InvokeWorkflowFile>
+    <If Condition="[BusquedasXUsuario.Rows.Count = 0]" DisplayName="If No existen BUSQUEDAS" sap:VirtualizedContainerService.HintSize="1370,701" sap2010:WorkflowViewState.IdRef="If_6">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_20" Level="Warn" Message="[&quot;NO EXISTEN BUSQUEDAS POR REALIZAR:&quot;+BusquedasXUsuario.Rows.Count.ToString]" />
+      </If.Then>
+      <If.Else>
+        <Sequence sap2010:Annotation.AnnotationText="Antes del login &#xA;&#xA;1.Validar si existen busquedas, Para el usuarioFK...&#xA;-Procesar busquedas&#xA;&#xA;2.Validar si existen resultados para procesar por el usuarioFK&#xA;-Procesar Resultados Contactar Personas" DisplayName="Login para el Usuario" sap:VirtualizedContainerService.HintSize="376,543" sap2010:WorkflowViewState.IdRef="Sequence_11">
+          <sap:WorkflowViewStateService.ViewState>
+            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            </scg:Dictionary>
+          </sap:WorkflowViewStateService.ViewState>
+          <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke I-1.0_LinkedIn_Login workflow" sap:VirtualizedContainerService.HintSize="334,112" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_12" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Apps\Linkedin\I-1.0_LinkedIn_Login.xaml">
+            <ui:InvokeWorkflowFile.Arguments>
+              <InArgument x:TypeArguments="x:String" x:Key="In_StrURL">https://www.linkedin.com/checkpoint/lg/sign-in-another-account</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_StrUser_LinkedIn">[in_TransactionItem("EmailRed").ToString]</InArgument>
+              <InArgument x:TypeArguments="x:String" x:Key="in_StrPass_LinkedIn">[New System.Net.NetworkCredential(String.Empty,in_TransactionItem("ClaveRed").ToString).Password]</InArgument>
+              <OutArgument x:TypeArguments="x:Boolean" x:Key="Out_LoginExist">[LoginExist]</OutArgument>
+              <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[in_Config]</InArgument>
+            </ui:InvokeWorkflowFile.Arguments>
+          </ui:InvokeWorkflowFile>
+          <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_7" Message="[LoginExist.ToString+&quot;_Cantidad Busquedas Pendientes para el usuario: &quot;+BusquedasXUsuario.Rows.Count.ToString]" />
+          <ui:ForEachRow ColumnNames="{x:Null}" CurrentIndex="{x:Null}" DataTable="[BusquedasXUsuario]" DisplayName="For Each Row in Data Table" sap:VirtualizedContainerService.HintSize="334,51" sap2010:WorkflowViewState.IdRef="ForEachRow_3">
+            <ui:ForEachRow.Body>
+              <ActivityAction x:TypeArguments="sd:DataRow">
+                <ActivityAction.Argument>
+                  <DelegateInArgument x:TypeArguments="sd:DataRow" Name="CurrentRow" />
+                </ActivityAction.Argument>
+                <Sequence sap2010:Annotation.AnnotationText="DISPACHER&#xA;&#xA;INSERTAR RESULTADOS&#xA;&#xA;TRANSACTION DATA.&#xA;&#xA;" DisplayName="Dispacher_ CreateFileExcel" sap:VirtualizedContainerService.HintSize="501,1916" sap2010:WorkflowViewState.IdRef="Sequence_37">
+                  <Sequence.Variables>
+                    <Variable x:TypeArguments="sd:DataTable" Name="TransactionDataDispacher" />
+                    <Variable x:TypeArguments="x:Int32" Name="ContinuarPag" />
+                  </Sequence.Variables>
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <Assign sap:VirtualizedContainerService.HintSize="459,60" sap2010:WorkflowViewState.IdRef="Assign_29">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:Int32">[CantidadResultadosEncontrados]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:Int32" xml:space="preserve">[If ( (CurrentRow("ResultadosEncontrados").ToString = String.Empty )     , 0,  CInt(CurrentRow("ResultadosEncontrados").ToString)  )]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="459,129" sap2010:WorkflowViewState.IdRef="MultipleAssign_3">
+                    <ui:MultipleAssign.AssignOperations>
+                      <scg:List x:TypeArguments="ui:AssignOperation" Capacity="4">
+                        <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_6">
+                          <ui:AssignOperation.To>
+                            <OutArgument x:TypeArguments="x:Int32">[CantidadContactadosDia]</OutArgument>
+                          </ui:AssignOperation.To>
+                          <ui:AssignOperation.Value>
+                            <InArgument x:TypeArguments="x:Int32" xml:space="preserve">[If ( (CurrentRow("CantidadContactadosDia").ToString = String.Empty )     , 0,  CInt(CurrentRow("CantidadContactadosDia").ToString)  )]</InArgument>
+                          </ui:AssignOperation.Value>
+                        </ui:AssignOperation>
+                        <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_7">
+                          <ui:AssignOperation.To>
+                            <OutArgument x:TypeArguments="x:String">[UltimaVezContactar]</OutArgument>
+                          </ui:AssignOperation.To>
+                          <ui:AssignOperation.Value>
+                            <InArgument x:TypeArguments="x:String">[CurrentRow("UltimaVezContactar").ToString]</InArgument>
+                          </ui:AssignOperation.Value>
+                        </ui:AssignOperation>
+                      </scg:List>
+                    </ui:MultipleAssign.AssignOperations>
+                  </ui:MultipleAssign>
+                  <Assign DisplayName="Assign CantidadInvitaciones" sap:VirtualizedContainerService.HintSize="459,60" sap2010:WorkflowViewState.IdRef="Assign_32">
+                    <Assign.To>
+                      <OutArgument x:TypeArguments="x:Int32">[in_CantidadInvitacionesXBusqueda]</OutArgument>
+                    </Assign.To>
+                    <Assign.Value>
+                      <InArgument x:TypeArguments="x:Int32">[CInt(CurrentRow("CantidadInvitaciones").ToString)]</InArgument>
+                    </Assign.Value>
+                  </Assign>
+                  <ui:LogMessage sap2010:Annotation.AnnotationText="&quot;PROCESANDO BUSQUEDA....&quot;&#xA;&quot;id-BusquedaFK: &quot;+CurrentRow(&quot;Id&quot;).ToString&#xA;&quot;Correo: &quot;+CurrentRow(&quot;Correo&quot;).ToString &#xA;&quot;EmailRed: &quot;+CurrentRow(&quot;EmailRed&quot;).ToString &#xA;&quot;ClaveRed: &quot;+CurrentRow(&quot;ClaveRed&quot;).ToString &#xA;&quot;Item: &quot;+CurrentRow(&quot;Item&quot;).ToString &#xA;&quot;Pagina: &quot;+CurrentRow(&quot;Pagina&quot;).ToString&#xA;&quot;Estado: &quot;+CurrentRow(&quot;Estado&quot;).ToString&#xA;&quot;MsgInvitacion: &quot;+CurrentRow(&quot;Invitacion&quot;).ToString" DisplayName="Log Message PROCESANDO BUSQUEDA." sap:VirtualizedContainerService.HintSize="459,238" sap2010:WorkflowViewState.IdRef="LogMessage_17" Message="[&quot;PROCESANDO BUSQUEDA....&quot;+&#xA;&quot;id-BusquedaFK: &quot;+CurrentRow(&quot;Id&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;Correo: &quot;+CurrentRow(&quot;Correo&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;EmailRed: &quot;+CurrentRow(&quot;EmailRed&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;ClaveRed: &quot;+CurrentRow(&quot;ClaveRed&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;Item: &quot;+CurrentRow(&quot;Item&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;Pagina: &quot;+CurrentRow(&quot;Pagina&quot;).ToString+&quot;  ||  &quot;+&#xA;&quot;Estado: &quot;+CurrentRow(&quot;Estado&quot;).ToString+&quot;  ||  &quot; +&#xA;&quot;MsgInvitacion: &quot;+CurrentRow(&quot;Invitacion&quot;).ToString+&quot;  ||  &quot; +&#xA;&quot;Resultados Encontrados: &quot;+CantidadResultadosEncontrados.ToString +&quot;  ||  &quot;]">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                  </ui:LogMessage>
+                  <TryCatch DisplayName="Try Catch PROCESANDO BUSQUEDA." sap:VirtualizedContainerService.HintSize="459,1060" sap2010:WorkflowViewState.IdRef="TryCatch_5">
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                    <TryCatch.Try>
+                      <Sequence DisplayName="For Each item Busqueda" sap:VirtualizedContainerService.HintSize="421,833" sap2010:WorkflowViewState.IdRef="Sequence_36">
+                        <Sequence.Variables>
+                          <Variable x:TypeArguments="sd:DataTable" Name="Out_ExtractDataTable" />
+                          <Variable x:TypeArguments="x:String" Name="URLBusqueda" />
+                          <Variable x:TypeArguments="sd:DataTable" Name="TransactionData" />
+                        </Sequence.Variables>
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <Sequence DisplayName="REmplazar por la pagina" sap:VirtualizedContainerService.HintSize="379,66" sap2010:WorkflowViewState.IdRef="Sequence_34">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <If Condition="[(CurrentRow(&quot;Pagina&quot;).ToString= &quot;&quot;) OR CurrentRow(&quot;Pagina&quot;).ToString =&quot;0&quot;]" DisplayName="If Asignar continuacion de pagina" sap:VirtualizedContainerService.HintSize="200,51" sap2010:WorkflowViewState.IdRef="If_5">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <If.Then>
+                              <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_13">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:Int32">[ContinuarPag]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:Int32">1</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                            </If.Then>
+                            <If.Else>
+                              <Assign sap:VirtualizedContainerService.HintSize="262,60" sap2010:WorkflowViewState.IdRef="Assign_14">
+                                <Assign.To>
+                                  <OutArgument x:TypeArguments="x:Int32">[ContinuarPag]</OutArgument>
+                                </Assign.To>
+                                <Assign.Value>
+                                  <InArgument x:TypeArguments="x:Int32">[CInt(CurrentRow("Pagina").ToString)]</InArgument>
+                                </Assign.Value>
+                              </Assign>
+                            </If.Else>
+                          </If>
+                          <If Condition="[ContinuarPag &gt; = in_limiteMaximoPaginas]" DisplayName="If Validar si es el limite maximo de la pagina" sap:VirtualizedContainerService.HintSize="200,51" sap2010:WorkflowViewState.IdRef="If_14">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <If.Then>
+                              <Sequence DisplayName="Limite maximo paginas" sap:VirtualizedContainerService.HintSize="376,397" sap2010:WorkflowViewState.IdRef="Sequence_65">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_43" Level="Error" Message="[&quot;Limite maximo paginas Busqueda....&quot;+CurrentRow(&quot;Item&quot;).ToString]" />
+                                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke 3.0.0_UpdateDT_BD_SQL workflow" sap:VirtualizedContainerService.HintSize="334,112" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_61" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\3.0.0_UpdateDT_BD_SQL.xaml">
+                                  <ui:InvokeWorkflowFile.Arguments>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_WhereID">[CurrentRow("Id").ToString]</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_ColumnEstado">Estado</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnEstado">En proceso</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_ColumnPagina">Pagina</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnPagina">[ContinuarPag.ToString]</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_TablaSql">Busquedas</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_Set">["Pagina" + " = '" + ContinuarPag.ToString + "', " + "Estado" + " = '" + "Buscando"]</InArgument>
+                                  </ui:InvokeWorkflowFile.Arguments>
+                                </ui:InvokeWorkflowFile>
+                                <Throw DisplayName="Throw  Limite maximo paginas" Exception="[new SystemException(&quot;Limite maximo paginas Busqueda....&quot;+CurrentRow(&quot;Item&quot;).ToString)]" sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Throw_2" />
+                              </Sequence>
+                            </If.Then>
+                          </If>
+                        </Sequence>
+                        <Sequence sap2010:Annotation.AnnotationText="https://www.linkedin.com/search/results/people/?geoUrn=%5B%22100876405%22%5D&amp;keywords=@ReplaceItem&amp;origin=FACETED_SEARCH&amp;page=@ReplaceNumPag" DisplayName="Construir URL de busqueda" sap:VirtualizedContainerService.HintSize="379,183" sap2010:WorkflowViewState.IdRef="Sequence_35">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                              <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <Assign sap:VirtualizedContainerService.HintSize="334,60" sap2010:WorkflowViewState.IdRef="Assign_15">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:String">[URLBusqueda]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:String">https://www.linkedin.com/search/results/people/?geoUrn=%5B%22100876405%22%5D&amp;keywords=@ReplaceItem&amp;origin=FACETED_SEARCH&amp;page=</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <Assign sap:VirtualizedContainerService.HintSize="334,60" sap2010:WorkflowViewState.IdRef="Assign_31">
+                            <Assign.To>
+                              <OutArgument x:TypeArguments="x:String">[URLBusqueda]</OutArgument>
+                            </Assign.To>
+                            <Assign.Value>
+                              <InArgument x:TypeArguments="x:String">[URLBusqueda.Replace("@ReplaceItem", CurrentRow("Item").ToString.Replace(" ", "%20"))]</InArgument>
+                            </Assign.Value>
+                          </Assign>
+                          <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_33" Message="[URLBusqueda]" />
+                        </Sequence>
+                        <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="CurrentRow(&quot;UsuarioFK&quot;).ToString&#xA;CurrentRow(&quot;Invitacion&quot;).ToString&#xA;Guid.Parse(CurrentRow(&quot;UsuarioFK&quot;).ToString)" DisplayName="Invoke P-1.2_LinkedIn_ExtractInformation 2.0 URL workflow" sap:VirtualizedContainerService.HintSize="379,169" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_37" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Apps\Linkedin\P-1.2_LinkedIn_ExtractInformation 2.0 URL.xaml">
+                          <ui:InvokeWorkflowFile.Arguments>
+                            <InArgument x:TypeArguments="x:String" x:Key="In_URL_ItemBusqueda">[URLBusqueda]</InArgument>
+                            <InOutArgument x:TypeArguments="x:Int32" x:Key="io_ContinuarPag">[ContinuarPag]</InOutArgument>
+                            <OutArgument x:TypeArguments="sd:DataTable" x:Key="out_Dt_Insert">[TransactionData]</OutArgument>
+                            <InArgument x:TypeArguments="s:Guid" x:Key="in_BusquedaFK">[Guid.Parse(CurrentRow("Id").ToString)]</InArgument>
+                            <InArgument x:TypeArguments="s:Guid" x:Key="in_UsuarioFK">[Guid.Parse(in_TransactionItem("Id").ToString)]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_CantidadResultados">[CantidadResultadosEncontrados.ToString]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_IDBusqueda">[CurrentRow("Id").ToString]</InArgument>
+                            <InArgument x:TypeArguments="x:Int32" x:Key="in_CantidadPaginasBusqueda">[in_CantidadPaginasBusqueda]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_MensajeDirecto">[CurrentRow("MensajeDirecto").ToString]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_Mensaje">[CurrentRow("Mensaje").ToString]</InArgument>
+                            <InArgument x:TypeArguments="x:String" x:Key="in_Invitacion">[CurrentRow("Invitacion").ToString]</InArgument>
+                          </ui:InvokeWorkflowFile.Arguments>
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                        </ui:InvokeWorkflowFile>
+                        <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="379,51" sap2010:WorkflowViewState.IdRef="CommentOut_18">
+                          <ui:CommentOut.Body>
+                            <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="376,387" sap2010:WorkflowViewState.IdRef="Sequence_70">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke 3.0.0_UpdateDT_BD_SQL workflow" sap:VirtualizedContainerService.HintSize="334,112" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_69" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\3.0.0_UpdateDT_BD_SQL.xaml">
+                                <ui:InvokeWorkflowFile.Arguments>
+                                  <InArgument x:TypeArguments="x:String" x:Key="in_WhereID">[CurrentRow("Id").ToString]</InArgument>
+                                  <InArgument x:TypeArguments="x:String" x:Key="in_ColumnEstado">Estado</InArgument>
+                                  <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnEstado">Buscando</InArgument>
+                                  <InArgument x:TypeArguments="x:String" x:Key="in_ColumnPagina">Pagina</InArgument>
+                                  <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnPagina">[ContinuarPag.ToString]</InArgument>
+                                  <InArgument x:TypeArguments="x:String" x:Key="in_TablaSql">Busquedas</InArgument>
+                                  <InArgument x:TypeArguments="x:String" x:Key="in_Set">["Pagina" + " = '" + ContinuarPag.ToString + "', " + "Estado" + " = '" + "Buscando"]</InArgument>
+                                </ui:InvokeWorkflowFile.Arguments>
+                              </ui:InvokeWorkflowFile>
+                              <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="Tabla de insercion &quot;Resultados&quot;" DisplayName="Invoke 2.0.0_InsertDT_BD_SQL workflow" sap:VirtualizedContainerService.HintSize="334,143" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_39" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\2.0.0_InsertDT_BD_SQL.xaml">
+                                <ui:InvokeWorkflowFile.Arguments>
+                                  <InArgument x:TypeArguments="sd:DataTable" x:Key="in_DT_Dispacher_ItemsExtraidos">[TransactionData]</InArgument>
+                                  <InArgument x:TypeArguments="x:String" x:Key="in_TablaSQL">[in_Config("TablaBdSqlResultados").ToString]</InArgument>
+                                </ui:InvokeWorkflowFile.Arguments>
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                              </ui:InvokeWorkflowFile>
+                            </Sequence>
+                          </ui:CommentOut.Body>
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                        </ui:CommentOut>
+                        <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke 7.0._QueryBD_SQL_EliminarResultadosDuplicados workflow" sap:VirtualizedContainerService.HintSize="379,112" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_67" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\7.0._QueryBD_SQL_EliminarResultadosDuplicados.xaml">
+                          <ui:InvokeWorkflowFile.Arguments>
+                            <OutArgument x:TypeArguments="sd:DataTable" x:Key="out_DataTableSelectSQL" />
+                            <InArgument x:TypeArguments="x:String" x:Key="in_UsuarioFK">[in_TransactionItem("Id").ToString]</InArgument>
+                          </ui:InvokeWorkflowFile.Arguments>
+                        </ui:InvokeWorkflowFile>
+                      </Sequence>
+                    </TryCatch.Try>
+                    <TryCatch.Catches>
+                      <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="425,21" sap2010:WorkflowViewState.IdRef="Catch`1_5">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <ActivityAction x:TypeArguments="s:Exception">
+                          <ActivityAction.Argument>
+                            <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                          </ActivityAction.Argument>
+                          <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_19" Level="Fatal" Message="[&quot;For Each PROCESANDO BUSQUEDA., Exception :&quot;+exception.ToString]" />
+                        </ActivityAction>
+                      </Catch>
+                    </TryCatch.Catches>
+                  </TryCatch>
+                </Sequence>
+              </ActivityAction>
+            </ui:ForEachRow.Body>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+          </ui:ForEachRow>
+        </Sequence>
+      </If.Else>
+    </If>
+    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke 4.1.0_QueryBD_SQL_Get_CantidadINvitacionesXBusqueda workflow" sap:VirtualizedContainerService.HintSize="1370,112" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_63" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\4.1.0_QueryBD_SQL_Get_CantidadINvitacionesXBusqueda.xaml">
+      <ui:InvokeWorkflowFile.Arguments>
+        <InArgument x:TypeArguments="x:String" x:Key="in_UsuarioFK">[in_TransactionItem("Id").ToString]</InArgument>
+        <OutArgument x:TypeArguments="sd:DataTable" x:Key="out_DT_CantidadInvitacionesXBusqueda">[CantidadInvitacionesXBusqueda]</OutArgument>
+      </ui:InvokeWorkflowFile.Arguments>
+    </ui:InvokeWorkflowFile>
+    <ui:ForEachRow ColumnNames="{x:Null}" CurrentIndex="{x:Null}" DataTable="[CantidadInvitacionesXBusqueda]" DisplayName="For Each Row in Data Table" sap:VirtualizedContainerService.HintSize="1370,3619" sap2010:WorkflowViewState.IdRef="ForEachRow_8">
+      <ui:ForEachRow.Body>
+        <ActivityAction x:TypeArguments="sd:DataRow">
+          <ActivityAction.Argument>
+            <DelegateInArgument x:TypeArguments="sd:DataRow" Name="QtyInvitaciones" />
+          </ActivityAction.Argument>
+          <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="1336,3499" sap2010:WorkflowViewState.IdRef="Sequence_66">
+            <Sequence.Variables>
+              <Variable x:TypeArguments="x:String" Name="BusquedaFK" />
+            </Sequence.Variables>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="1294,191" sap2010:WorkflowViewState.IdRef="MultipleAssign_5">
+              <ui:MultipleAssign.AssignOperations>
+                <scg:List x:TypeArguments="ui:AssignOperation" Capacity="4">
+                  <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_9">
+                    <ui:AssignOperation.To>
+                      <OutArgument x:TypeArguments="x:String">[UltimaVezContactar]</OutArgument>
+                    </ui:AssignOperation.To>
+                    <ui:AssignOperation.Value>
+                      <InArgument x:TypeArguments="x:String">[QtyInvitaciones("UltimaVezContactar").ToString]</InArgument>
+                    </ui:AssignOperation.Value>
+                  </ui:AssignOperation>
+                  <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_10">
+                    <ui:AssignOperation.To>
+                      <OutArgument x:TypeArguments="x:Int32">[CantidadContactadosDia]</OutArgument>
+                    </ui:AssignOperation.To>
+                    <ui:AssignOperation.Value>
+                      <InArgument x:TypeArguments="x:Int32">[CInt(QtyInvitaciones("CantidadContactadosDia").ToString)]</InArgument>
+                    </ui:AssignOperation.Value>
+                  </ui:AssignOperation>
+                  <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_11">
+                    <ui:AssignOperation.To>
+                      <OutArgument x:TypeArguments="x:String">[BusquedaFK]</OutArgument>
+                    </ui:AssignOperation.To>
+                    <ui:AssignOperation.Value>
+                      <InArgument x:TypeArguments="x:String">[QtyInvitaciones("Id").ToString]</InArgument>
+                    </ui:AssignOperation.Value>
+                  </ui:AssignOperation>
+                  <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_12">
+                    <ui:AssignOperation.To>
+                      <OutArgument x:TypeArguments="x:Int32">[in_CantidadInvitacionesXBusqueda]</OutArgument>
+                    </ui:AssignOperation.To>
+                    <ui:AssignOperation.Value>
+                      <InArgument x:TypeArguments="x:Int32">[CInt(QtyInvitaciones("CantidadInvitaciones").ToString)]</InArgument>
+                    </ui:AssignOperation.Value>
+                  </ui:AssignOperation>
+                </scg:List>
+              </ui:MultipleAssign.AssignOperations>
+            </ui:MultipleAssign>
+            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="1294,91" sap2010:WorkflowViewState.IdRef="LogMessage_44" Level="Warn" Message="[&quot;UltimaVezContactar:&quot;+UltimaVezContactar + vbCrLf+&#xA;&quot;CantidadContactadosDia:&quot;+CantidadContactadosDia.ToString + vbCrLf+&#xA;&quot;in_CantidadInvitacionesXBusqueda:&quot;+in_CantidadInvitacionesXBusqueda.ToString + vbCrLf+&#xA;&quot;BusquedaFK:&quot;+BusquedaFK]" />
+            <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="" DisplayName="Invoke 4.0.0_QueryBD_SQL_Get_TransactionItem_ContactarItem workflow" sap:VirtualizedContainerService.HintSize="1294,143" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_40" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\4.0.0_QueryBD_SQL_Get_TransactionItem_ContactarItem.xaml">
+              <ui:InvokeWorkflowFile.Arguments>
+                <InArgument x:TypeArguments="x:String" x:Key="in_UsuarioFK">[in_TransactionItem("Id").ToString]</InArgument>
+                <OutArgument x:TypeArguments="sd:DataTable" x:Key="out_DT_CantidadInvitacionesXBusqueda">[ResultadosContactar]</OutArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_CantidadParaContactar">[in_CantidadInvitacionesXBusqueda.ToString]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_BusquedaFK">[QtyInvitaciones("Id").ToString]</InArgument>
+              </ui:InvokeWorkflowFile.Arguments>
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+            </ui:InvokeWorkflowFile>
+            <If Condition="[ResultadosContactar.Rows.Count = 0]" DisplayName="If No existen RESULTADOS" sap:VirtualizedContainerService.HintSize="1294,2862" sap2010:WorkflowViewState.IdRef="If_8">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <If.Then>
+                <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_21" Level="Warn" Message="[&quot;NO EXISTEN RESULTADOS PARA CONTACTAR:&quot;+ResultadosContactar.Rows.Count.ToString]" />
+              </If.Then>
+              <If.Else>
+                <Sequence sap2010:Annotation.AnnotationText="" DisplayName="Login para el Usuario" sap:VirtualizedContainerService.HintSize="915,2704" sap2010:WorkflowViewState.IdRef="Sequence_42">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="873,91" sap2010:WorkflowViewState.IdRef="LogMessage_22" Message="[&quot;Procesar &quot;+ResultadosContactar.Rows.Count.ToString +&quot; Resultados&quot;]" />
+                  <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="873,51" sap2010:WorkflowViewState.IdRef="CommentOut_28">
+                    <ui:CommentOut.Body>
+                      <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="797,547" sap2010:WorkflowViewState.IdRef="Sequence_96">
+                        <sap:WorkflowViewStateService.ViewState>
+                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                          </scg:Dictionary>
+                        </sap:WorkflowViewStateService.ViewState>
+                        <If sap2010:Annotation.AnnotationText="Antes del login &#xA;&#xA;1.Validar si existen busquedas, Para el usuarioFK...&#xA;-Procesar busquedas&#xA;&#xA;2.Validar si existen resultados para procesar por el usuarioFK&#xA;-Procesar Resultados Contactar Personas&#xA;&#xA;LoginExist AND ResultadosContactar.Rows.Count &lt;&gt; 0&#xA;&#xA;Login Falso y sin resultados = No Requiere&#xA;Login True y sin resultados = No Requiere&#xA;Login Falso y con resultados =  Requiere&#xA;Login True y  con resultados =  NO Requiere&#xA;&#xA;0 0 = 0&#xA;0 1 = 1&#xA;1 0 = 0&#xA;1 1 = 0&#xA;" Condition="[LoginExist]" DisplayName="If LoginExist" sap:VirtualizedContainerService.HintSize="200,51" sap2010:WorkflowViewState.IdRef="If_23">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                              <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <If.Then>
+                            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,93" sap2010:WorkflowViewState.IdRef="LogMessage_68" Message="[&quot;NO se Requiere login Linkedin&quot;]" />
+                          </If.Then>
+                          <If.Else>
+                            <Sequence DisplayName="Login linkedin" sap:VirtualizedContainerService.HintSize="376,338" sap2010:WorkflowViewState.IdRef="Sequence_95">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,93" sap2010:WorkflowViewState.IdRef="LogMessage_69" Message="[&quot;***Requiere login Linkedin&quot;]" />
+                              <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke I-1.0_LinkedIn_Login workflow" sap:VirtualizedContainerService.HintSize="334,113" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_82" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Apps\Linkedin\I-1.0_LinkedIn_Login.xaml">
+                                <ui:InvokeWorkflowFile.Arguments>
+                                  <InArgument x:TypeArguments="x:String" x:Key="In_StrURL">https://www.linkedin.com/checkpoint/lg/sign-in-another-account</InArgument>
+                                  <InArgument x:TypeArguments="x:String" x:Key="in_StrUser_LinkedIn">[in_TransactionItem("EmailRed").ToString]</InArgument>
+                                  <InArgument x:TypeArguments="x:String" x:Key="in_StrPass_LinkedIn">[New System.Net.NetworkCredential(String.Empty,in_TransactionItem("ClaveRed").ToString).Password]</InArgument>
+                                  <OutArgument x:TypeArguments="x:Boolean" x:Key="Out_LoginExist">[LoginExist]</OutArgument>
+                                  <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[in_Config]</InArgument>
+                                </ui:InvokeWorkflowFile.Arguments>
+                              </ui:InvokeWorkflowFile>
+                            </Sequence>
+                          </If.Else>
+                        </If>
+                      </Sequence>
+                    </ui:CommentOut.Body>
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                  </ui:CommentOut>
+                  <ui:ForEachRow ColumnNames="{x:Null}" CurrentIndex="{x:Null}" DataTable="[ResultadosContactar]" DisplayName="For Each Row in Data Table" sap:VirtualizedContainerService.HintSize="873,2359" sap2010:WorkflowViewState.IdRef="ForEachRow_7">
+                    <ui:ForEachRow.Body>
+                      <ActivityAction x:TypeArguments="sd:DataRow">
+                        <ActivityAction.Argument>
+                          <DelegateInArgument x:TypeArguments="sd:DataRow" Name="CurrentRowResultado" />
+                        </ActivityAction.Argument>
+                        <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="839,2239" sap2010:WorkflowViewState.IdRef="Sequence_51">
+                          <sap:WorkflowViewStateService.ViewState>
+                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                              <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                            </scg:Dictionary>
+                          </sap:WorkflowViewStateService.ViewState>
+                          <ui:LogMessage sap2010:Annotation.AnnotationText="&quot;PROCESANDO RESULTADO...&#xA;&quot;Id: &quot;+CurrentRowResultado(&quot;Id&quot;).ToString &#xA;&quot;Nombre: &quot;+CurrentRowResultado(&quot;Nombre&quot;).ToString &#xA;&quot;Url: &quot;+CurrentRowResultado(&quot;Url&quot;).ToString &#xA;&quot;Cargo: &quot;+CurrentRowResultado(&quot;Cargo&quot;).ToString &#xA;&quot;Ubicacion: &quot;+CurrentRowResultado(&quot;Ubicacion&quot;).ToString&#xA;&quot;Estado: &quot;+CurrentRowResultado(&quot;Estado&quot;).ToString&#xA;&quot;UsuarioFk: &quot;+CurrentRowResultado(&quot;UsuarioFk&quot;).ToString" DisplayName="Log Message PROCESANDO RESULTADO" sap:VirtualizedContainerService.HintSize="797,253" sap2010:WorkflowViewState.IdRef="LogMessage_30" Message="[&quot;PROCESANDO RESULTADO....&quot;+&#xA;&quot;Id: &quot;+CurrentRowResultado(&quot;Id&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;Nombre: &quot;+CurrentRowResultado(&quot;Nombre&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;Url: &quot;+CurrentRowResultado(&quot;Url&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;Cargo: &quot;+CurrentRowResultado(&quot;Cargo&quot;).ToString +&quot;  ||  &quot;+&#xA;&quot;Ubicacion: &quot;+CurrentRowResultado(&quot;Ubicacion&quot;).ToString+&quot;  ||  &quot;+&#xA;&quot;Estado: &quot;+CurrentRowResultado(&quot;Estado&quot;).ToString+&quot;  ||  &quot;+&#xA;&quot;UsuarioFk: &quot;+CurrentRowResultado(&quot;UsuarioFk&quot;).ToString+&quot;  ||  &quot;]">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                          </ui:LogMessage>
+                          <ui:Comment sap:VirtualizedContainerService.HintSize="797,74" sap2010:WorkflowViewState.IdRef="Comment_2" Text="Pendiente Realizar la validacion de cantidad ususarios contactados x dia..." />
+                          <Sequence DisplayName="Validate Number of contacts added Validate  Date" sap:VirtualizedContainerService.HintSize="797,874" sap2010:WorkflowViewState.IdRef="Sequence_61">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <Assign sap2010:Annotation.AnnotationText="" sap:VirtualizedContainerService.HintSize="755,91" sap2010:WorkflowViewState.IdRef="Assign_25">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:Boolean">[Boo_UltimaVezContactar]</OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:Boolean">[now.tostring(“dd/MM/yyyy”) = UltimaVezContactar]</InArgument>
+                              </Assign.Value>
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                            </Assign>
+                            <If sap2010:Annotation.AnnotationText="Validar si es el mismo dia de ejecucion...&#xA;" Condition="[Boo_UltimaVezContactar]" DisplayName="If Boo_Linkedin_DateLastRun" sap:VirtualizedContainerService.HintSize="755,108" sap2010:WorkflowViewState.IdRef="If_12">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                  <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <If.Then>
+                                <Sequence sap:VirtualizedContainerService.HintSize="376,183" sap2010:WorkflowViewState.IdRef="Sequence_72">
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_36" Message="[&quot;La ultima ejecucion fue el dia : &quot; +UltimaVezContactar]">
+                                    <sap:WorkflowViewStateService.ViewState>
+                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                      </scg:Dictionary>
+                                    </sap:WorkflowViewStateService.ViewState>
+                                  </ui:LogMessage>
+                                </Sequence>
+                              </If.Then>
+                              <If.Else>
+                                <Sequence DisplayName="UpdateAsset" sap:VirtualizedContainerService.HintSize="376,452" sap2010:WorkflowViewState.IdRef="Sequence_59">
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_37" Level="Warn" Message="[&quot;Actualizar Campo UltimaVezContactar Fecha Actual y  CantidadContactadosDia a 0 &quot;]" />
+                                  <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="334,129" sap2010:WorkflowViewState.IdRef="MultipleAssign_2">
+                                    <ui:MultipleAssign.AssignOperations>
+                                      <scg:List x:TypeArguments="ui:AssignOperation" Capacity="4">
+                                        <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_4">
+                                          <ui:AssignOperation.To>
+                                            <OutArgument x:TypeArguments="x:String">[UltimaVezContactar]</OutArgument>
+                                          </ui:AssignOperation.To>
+                                          <ui:AssignOperation.Value>
+                                            <InArgument x:TypeArguments="x:String">[now.tostring(“dd/MM/yyyy”)]</InArgument>
+                                          </ui:AssignOperation.Value>
+                                        </ui:AssignOperation>
+                                        <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_5">
+                                          <ui:AssignOperation.To>
+                                            <OutArgument x:TypeArguments="x:Int32">[CantidadContactadosDia]</OutArgument>
+                                          </ui:AssignOperation.To>
+                                          <ui:AssignOperation.Value>
+                                            <InArgument x:TypeArguments="x:Int32">0</InArgument>
+                                          </ui:AssignOperation.Value>
+                                        </ui:AssignOperation>
+                                      </scg:List>
+                                    </ui:MultipleAssign.AssignOperations>
+                                  </ui:MultipleAssign>
+                                  <Assign sap:VirtualizedContainerService.HintSize="334,60" sap2010:WorkflowViewState.IdRef="Assign_33">
+                                    <Assign.To>
+                                      <OutArgument x:TypeArguments="x:Boolean">[Boo_UltimaVezContactar]</OutArgument>
+                                    </Assign.To>
+                                    <Assign.Value>
+                                      <InArgument x:TypeArguments="x:Boolean">True</InArgument>
+                                    </Assign.Value>
+                                  </Assign>
+                                </Sequence>
+                              </If.Else>
+                            </If>
+                            <Assign sap:VirtualizedContainerService.HintSize="755,60" sap2010:WorkflowViewState.IdRef="Assign_27">
+                              <Assign.To>
+                                <OutArgument x:TypeArguments="x:Boolean">[Boo_CantidadContactadosDia]</OutArgument>
+                              </Assign.To>
+                              <Assign.Value>
+                                <InArgument x:TypeArguments="x:Boolean">[CantidadContactadosDia&lt; in_CantidadInvitacionesXBusqueda]</InArgument>
+                              </Assign.Value>
+                            </Assign>
+                            <If Condition="[Boo_CantidadContactadosDia and Boo_UltimaVezContactar]" DisplayName="If Boo_CantidadContactadosDia and Boo_UltimaVezContactar" sap:VirtualizedContainerService.HintSize="755,403" sap2010:WorkflowViewState.IdRef="If_13">
+                              <sap:WorkflowViewStateService.ViewState>
+                                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                </scg:Dictionary>
+                              </sap:WorkflowViewStateService.ViewState>
+                              <If.Then>
+                                <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_40" Level="Info" Message="[&quot;SI Cumple con las Condiciones de cantidad contactos por dia:&quot;+CantidadContactadosDia.ToString]" />
+                              </If.Then>
+                              <If.Else>
+                                <Sequence sap:VirtualizedContainerService.HintSize="376,245" sap2010:WorkflowViewState.IdRef="Sequence_62">
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_48" Level="Warn" Message="[&quot;#### NO Cumple con las Condiciones de cantidad contactos por dia:&quot;+CantidadContactadosDia.ToString]" />
+                                  <ui:Break sap:VirtualizedContainerService.HintSize="334,22" sap2010:WorkflowViewState.IdRef="Break_1" />
+                                </Sequence>
+                              </If.Else>
+                            </If>
+                          </Sequence>
+                          <If sap2010:Annotation.AnnotationText="Antes del login &#xA;&#xA;1.Validar si existen busquedas, Para el usuarioFK...&#xA;-Procesar busquedas&#xA;&#xA;2.Validar si existen resultados para procesar por el usuarioFK&#xA;-Procesar Resultados Contactar Personas&#xA;&#xA;LoginExist AND ResultadosContactar.Rows.Count &lt;&gt; 0&#xA;&#xA;Login Falso y sin resultados = No Requiere&#xA;Login True y sin resultados = No Requiere&#xA;Login Falso y con resultados =  Requiere&#xA;Login True y  con resultados =  NO Requiere&#xA;&#xA;0 0 = 0&#xA;0 1 = 1&#xA;1 0 = 0&#xA;1 1 = 0&#xA;" Condition="[LoginExist]" DisplayName="If LoginExist" sap:VirtualizedContainerService.HintSize="797,493" sap2010:WorkflowViewState.IdRef="If_10">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <If.Then>
+                              <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_29" Message="[&quot;NO se Requiere login Linkedin&quot;]" />
+                            </If.Then>
+                            <If.Else>
+                              <Sequence DisplayName="Login linkedin" sap:VirtualizedContainerService.HintSize="376,335" sap2010:WorkflowViewState.IdRef="Sequence_54">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_32" Message="[&quot;***Requiere login Linkedin&quot;]" />
+                                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke I-1.0_LinkedIn_Login workflow" sap:VirtualizedContainerService.HintSize="334,112" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_68" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Apps\Linkedin\I-1.0_LinkedIn_Login.xaml">
+                                  <ui:InvokeWorkflowFile.Arguments>
+                                    <InArgument x:TypeArguments="x:String" x:Key="In_StrURL">https://www.linkedin.com/checkpoint/lg/sign-in-another-account</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_StrUser_LinkedIn">[in_TransactionItem("EmailRed").ToString]</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_StrPass_LinkedIn">[New System.Net.NetworkCredential(String.Empty,in_TransactionItem("ClaveRed").ToString).Password]</InArgument>
+                                    <OutArgument x:TypeArguments="x:Boolean" x:Key="Out_LoginExist">[LoginExist]</OutArgument>
+                                    <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[in_Config]</InArgument>
+                                  </ui:InvokeWorkflowFile.Arguments>
+                                </ui:InvokeWorkflowFile>
+                              </Sequence>
+                            </If.Else>
+                          </If>
+                          <TryCatch DisplayName="Try Catch PROCESANDO RESULTADO." sap:VirtualizedContainerService.HintSize="797,293" sap2010:WorkflowViewState.IdRef="TryCatch_8">
+                            <sap:WorkflowViewStateService.ViewState>
+                              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                              </scg:Dictionary>
+                            </sap:WorkflowViewStateService.ViewState>
+                            <TryCatch.Try>
+                              <Sequence DisplayName="PROCESANDO RESULTADO." sap:VirtualizedContainerService.HintSize="200,66" sap2010:WorkflowViewState.IdRef="Sequence_52">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke 3.0.0_UpdateDT_BD_SQLByBusqueda workflow" sap:VirtualizedContainerService.HintSize="376,113" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_64" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\3.0.0_UpdateDT_BD_SQLByBusqueda.xaml">
+                                  <ui:InvokeWorkflowFile.Arguments>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_ColumnEstado">Estado</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnEstado">Procesando</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_TablaSql">Resultados</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_WhereIDBusquedaFK">[CurrentRowResultado("Id").ToString]</InArgument>
+                                  </ui:InvokeWorkflowFile.Arguments>
+                                </ui:InvokeWorkflowFile>
+                                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke P-1.4_NavigateToItem workflow" sap:VirtualizedContainerService.HintSize="376,113" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_1" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Apps\Linkedin\P-1.4_NavigateToItem.xaml">
+                                  <ui:InvokeWorkflowFile.Arguments>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_UrlContacto">[CurrentRowResultado("Url").ToString]</InArgument>
+                                  </ui:InvokeWorkflowFile.Arguments>
+                                </ui:InvokeWorkflowFile>
+                                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="in_Config(&quot;MensajeEnviar&quot;).ToString&#xA;.Replace(&quot;--&quot;, Split(in_TransactionItem(&quot;Nombre&quot;).ToString, &quot;&quot;)(0))&#xA;&#xA;" DisplayName="Invoke P-2.0_ContactarItem workflow" sap:VirtualizedContainerService.HintSize="376,205" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_2" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Apps\Linkedin\P-2.0_ContactarItem.xaml">
+                                  <ui:InvokeWorkflowFile.Arguments>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_MensajeDirecto">[CurrentRowResultado("MensajeDirecto").ToString.Replace("@Nombre", Split(CurrentRowResultado("Nombre").ToString, " ")(0))]</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="In_Invitacion">[CurrentRowResultado("Invitacion").ToString.Replace("@Nombre", Split(CurrentRowResultado("Nombre").ToString, " ")(0))]</InArgument>
+                                  </ui:InvokeWorkflowFile.Arguments>
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                </ui:InvokeWorkflowFile>
+                                <Sequence DisplayName="Incrementar contactados" sap:VirtualizedContainerService.HintSize="376,530" sap2010:WorkflowViewState.IdRef="Sequence_76">
+                                  <sap:WorkflowViewStateService.ViewState>
+                                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                    </scg:Dictionary>
+                                  </sap:WorkflowViewStateService.ViewState>
+                                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,93" sap2010:WorkflowViewState.IdRef="LogMessage_47" Message="[&quot;Cumple con las Condiciones de cantidad contactos por dia:&quot;+CantidadContactadosDia.ToString+&quot;...&quot;+CantidadContactadosDia.ToString]" />
+                                  <Assign sap:VirtualizedContainerService.HintSize="334,60" sap2010:WorkflowViewState.IdRef="Assign_34">
+                                    <Assign.To>
+                                      <OutArgument x:TypeArguments="x:Int32">[CantidadContactadosDia]</OutArgument>
+                                    </Assign.To>
+                                    <Assign.Value>
+                                      <InArgument x:TypeArguments="x:Int32">[1 +CantidadContactadosDia]</InArgument>
+                                    </Assign.Value>
+                                  </Assign>
+                                  <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke 3.0.0_UpdateDT_BD_SQL workflow" sap:VirtualizedContainerService.HintSize="334,113" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_71" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\3.0.0_UpdateDT_BD_SQL.xaml">
+                                    <ui:InvokeWorkflowFile.Arguments>
+                                      <InArgument x:TypeArguments="x:String" x:Key="in_WhereID">[CurrentRowResultado("BusquedaFk").ToString]</InArgument>
+                                      <InArgument x:TypeArguments="x:String" x:Key="in_ColumnEstado">UltimaVezContactar</InArgument>
+                                      <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnEstado">[UltimaVezContactar]</InArgument>
+                                      <InArgument x:TypeArguments="x:String" x:Key="in_ColumnPagina">CantidadContactadosDia</InArgument>
+                                      <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnPagina">[CantidadContactadosDia.ToString]</InArgument>
+                                      <InArgument x:TypeArguments="x:String" x:Key="in_TablaSql">Busquedas</InArgument>
+                                      <InArgument x:TypeArguments="x:String" x:Key="in_Set">["Pagina" + " = '" + "1" + "', " + "Estado" + " = '" + "Buscando"]</InArgument>
+                                    </ui:InvokeWorkflowFile.Arguments>
+                                  </ui:InvokeWorkflowFile>
+                                  <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="334,52" sap2010:WorkflowViewState.IdRef="CommentOut_22">
+                                    <ui:CommentOut.Body>
+                                      <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="376,205" sap2010:WorkflowViewState.IdRef="Sequence_75">
+                                        <sap:WorkflowViewStateService.ViewState>
+                                          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                          </scg:Dictionary>
+                                        </sap:WorkflowViewStateService.ViewState>
+                                        <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke 3.0.0_UpdateDT_BD_SQL workflow" sap:VirtualizedContainerService.HintSize="334,113" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_72" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\3.0.0_UpdateDT_BD_SQL.xaml">
+                                          <ui:InvokeWorkflowFile.Arguments>
+                                            <InArgument x:TypeArguments="x:String" x:Key="in_WhereID">[in_TransactionItem("Id").ToString]</InArgument>
+                                            <InArgument x:TypeArguments="x:String" x:Key="in_ColumnEstado">UltimaVezContactar</InArgument>
+                                            <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnEstado">[UltimaVezContactar]</InArgument>
+                                            <InArgument x:TypeArguments="x:String" x:Key="in_ColumnPagina">CantidadContactadosDia</InArgument>
+                                            <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnPagina">[CantidadContactadosDia.ToString]</InArgument>
+                                            <InArgument x:TypeArguments="x:String" x:Key="in_TablaSql">Usuarios</InArgument>
+                                            <InArgument x:TypeArguments="x:String" x:Key="in_Set">["Pagina" + " = '" + "1" + "', " + "Estado" + " = '" + "Buscando"]</InArgument>
+                                          </ui:InvokeWorkflowFile.Arguments>
+                                        </ui:InvokeWorkflowFile>
+                                      </Sequence>
+                                    </ui:CommentOut.Body>
+                                    <sap:WorkflowViewStateService.ViewState>
+                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                        <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                      </scg:Dictionary>
+                                    </sap:WorkflowViewStateService.ViewState>
+                                  </ui:CommentOut>
+                                </Sequence>
+                                <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke 3.0.0_UpdateDT_BD_SQLByBusqueda workflow" sap:VirtualizedContainerService.HintSize="376,113" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_65" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\3.0.0_UpdateDT_BD_SQLByBusqueda.xaml">
+                                  <ui:InvokeWorkflowFile.Arguments>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_ColumnEstado">Estado</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnEstado">Solicitud enviada</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_TablaSql">Resultados</InArgument>
+                                    <InArgument x:TypeArguments="x:String" x:Key="in_WhereIDBusquedaFK">[CurrentRowResultado("Id").ToString]</InArgument>
+                                  </ui:InvokeWorkflowFile.Arguments>
+                                </ui:InvokeWorkflowFile>
+                              </Sequence>
+                            </TryCatch.Try>
+                            <TryCatch.Catches>
+                              <Catch x:TypeArguments="s:Exception" sap:VirtualizedContainerService.HintSize="404,21" sap2010:WorkflowViewState.IdRef="Catch`1_8">
+                                <sap:WorkflowViewStateService.ViewState>
+                                  <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                    <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                    <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                  </scg:Dictionary>
+                                </sap:WorkflowViewStateService.ViewState>
+                                <ActivityAction x:TypeArguments="s:Exception">
+                                  <ActivityAction.Argument>
+                                    <DelegateInArgument x:TypeArguments="s:Exception" Name="exception" />
+                                  </ActivityAction.Argument>
+                                  <Sequence DisplayName="Error PROCESANDO RESULTADO" sap:VirtualizedContainerService.HintSize="397,426" sap2010:WorkflowViewState.IdRef="Sequence_53">
+                                    <sap:WorkflowViewStateService.ViewState>
+                                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                      </scg:Dictionary>
+                                    </sap:WorkflowViewStateService.ViewState>
+                                    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="355,91" sap2010:WorkflowViewState.IdRef="LogMessage_31" Level="Fatal" Message="[&quot;For Each PROCESANDO RESULTADO., Exception :&quot;+exception.ToString]" />
+                                    <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke 3.0.0_UpdateDT_BD_SQLByBusqueda workflow" sap:VirtualizedContainerService.HintSize="436,112" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_66" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\3.0.0_UpdateDT_BD_SQLByBusqueda.xaml">
+                                      <ui:InvokeWorkflowFile.Arguments>
+                                        <InArgument x:TypeArguments="x:String" x:Key="in_ColumnEstado">Estado</InArgument>
+                                        <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnEstado">Fallo</InArgument>
+                                        <InArgument x:TypeArguments="x:String" x:Key="in_TablaSql">Resultados</InArgument>
+                                        <InArgument x:TypeArguments="x:String" x:Key="in_WhereIDBusquedaFK">[CurrentRowResultado("Id").ToString]</InArgument>
+                                      </ui:InvokeWorkflowFile.Arguments>
+                                    </ui:InvokeWorkflowFile>
+                                    <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="436,51" sap2010:WorkflowViewState.IdRef="CommentOut_17">
+                                      <ui:CommentOut.Body>
+                                        <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="376,204" sap2010:WorkflowViewState.IdRef="Sequence_69">
+                                          <sap:WorkflowViewStateService.ViewState>
+                                            <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                              <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                                            </scg:Dictionary>
+                                          </sap:WorkflowViewStateService.ViewState>
+                                          <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke 3.0.0_UpdateDT_BD_SQL workflow" sap:VirtualizedContainerService.HintSize="334,112" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_55" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\3.0.0_UpdateDT_BD_SQL.xaml">
+                                            <ui:InvokeWorkflowFile.Arguments>
+                                              <InArgument x:TypeArguments="x:String" x:Key="in_WhereID">[CurrentRowResultado("Id").ToString]</InArgument>
+                                              <InArgument x:TypeArguments="x:String" x:Key="in_ColumnEstado">Estado</InArgument>
+                                              <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnEstado">Fallo</InArgument>
+                                              <InArgument x:TypeArguments="x:String" x:Key="in_ColumnPagina">Nombre</InArgument>
+                                              <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnPagina">[CurrentRowResultado("Nombre").ToString]</InArgument>
+                                              <InArgument x:TypeArguments="x:String" x:Key="in_TablaSql">Resultados</InArgument>
+                                              <InArgument x:TypeArguments="x:String" x:Key="in_Set">["Pagina" + " = '" + "1" + "', " + "Estado" + " = '" + "Buscando"]</InArgument>
+                                            </ui:InvokeWorkflowFile.Arguments>
+                                          </ui:InvokeWorkflowFile>
+                                        </Sequence>
+                                      </ui:CommentOut.Body>
+                                      <sap:WorkflowViewStateService.ViewState>
+                                        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                                          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                                          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                                        </scg:Dictionary>
+                                      </sap:WorkflowViewStateService.ViewState>
+                                    </ui:CommentOut>
+                                  </Sequence>
+                                </ActivityAction>
+                              </Catch>
+                            </TryCatch.Catches>
+                          </TryCatch>
+                        </Sequence>
+                      </ActivityAction>
+                    </ui:ForEachRow.Body>
+                    <sap:WorkflowViewStateService.ViewState>
+                      <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                        <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                        <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                      </scg:Dictionary>
+                    </sap:WorkflowViewStateService.ViewState>
+                  </ui:ForEachRow>
+                </Sequence>
+              </If.Else>
+            </If>
+          </Sequence>
+        </ActivityAction>
+      </ui:ForEachRow.Body>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+    </ui:ForEachRow>
+    <If Condition="[CantidadInvitacionesXBusqueda.Rows.Count = 0]" DisplayName="If CantidadInvitacionesXBusqueda.Rows.Count = 0" sap:VirtualizedContainerService.HintSize="1370,51" sap2010:WorkflowViewState.IdRef="If_15">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <If.Then>
+        <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_45" Level="Warn" Message="[&quot;NO EXISTEN BUSQUEDAS AUTORIZADAS PARA CONTACTAR&quot;]" />
+      </If.Then>
+    </If>
+    <Sequence DisplayName="Validate Number of contacts added Validate  Date" sap:VirtualizedContainerService.HintSize="1370,2149" sap2010:WorkflowViewState.IdRef="Sequence_93">
+      <Sequence.Variables>
+        <Variable x:TypeArguments="x:Boolean" Name="Boo_ValidarNuevos" />
+        <Variable x:TypeArguments="x:Boolean" Name="Boo_FechaValidarNuevos" />
+      </Sequence.Variables>
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="642,91" sap2010:WorkflowViewState.IdRef="LogMessage_61" Message="[&quot;Fecha:&quot;+in_TransactionItem(&quot;UltimaVezContactar&quot;).ToString+vbCrLf+&#xA;&quot;ValidarNuevos:&quot;+in_TransactionItem(&quot;ValidarNuevos&quot;).ToString]" />
+      <Assign sap2010:Annotation.AnnotationText="" sap:VirtualizedContainerService.HintSize="642,91" sap2010:WorkflowViewState.IdRef="Assign_41">
+        <Assign.To>
+          <OutArgument x:TypeArguments="x:Boolean">[Boo_FechaValidarNuevos]</OutArgument>
+        </Assign.To>
+        <Assign.Value>
+          <InArgument x:TypeArguments="x:Boolean">[now.tostring(“dd/MM/yyyy”) = in_TransactionItem("UltimaVezContactar").ToString]</InArgument>
+        </Assign.Value>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </Assign>
+      <If sap2010:Annotation.AnnotationText="Validar si es el mismo dia de ejecucion...&#xA;" Condition="[Boo_FechaValidarNuevos]" DisplayName="If Boo_Linkedin_DateLastRun" sap:VirtualizedContainerService.HintSize="642,1704" sap2010:WorkflowViewState.IdRef="If_21">
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+            <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+        <If.Then>
+          <Sequence sap:VirtualizedContainerService.HintSize="200,66" sap2010:WorkflowViewState.IdRef="Sequence_89">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,93" sap2010:WorkflowViewState.IdRef="LogMessage_62" Message="[&quot;La ultima ejecucion fue el dia : &quot; +UltimaVezContactar]">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+            </ui:LogMessage>
+          </Sequence>
+        </If.Then>
+        <If.Else>
+          <Sequence DisplayName="UpdateAsset" sap:VirtualizedContainerService.HintSize="397,1504" sap2010:WorkflowViewState.IdRef="Sequence_90">
+            <Sequence.Variables>
+              <Variable x:TypeArguments="x:String" Name="CantidadContactosActual" />
+            </Sequence.Variables>
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                <x:Boolean x:Key="IsPinned">False</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="355,91" sap2010:WorkflowViewState.IdRef="LogMessage_63" Level="Warn" Message="[&quot;Realizar login para validar Nuevos contactos&quot;]" />
+            <If sap2010:Annotation.AnnotationText="Antes del login &#xA;&#xA;1.Validar si existen busquedas, Para el usuarioFK...&#xA;-Procesar busquedas&#xA;&#xA;2.Validar si existen resultados para procesar por el usuarioFK&#xA;-Procesar Resultados Contactar Personas&#xA;&#xA;LoginExist AND ResultadosContactar.Rows.Count &lt;&gt; 0&#xA;&#xA;Login Falso y sin resultados = No Requiere&#xA;Login True y sin resultados = No Requiere&#xA;Login Falso y con resultados =  Requiere&#xA;Login True y  con resultados =  NO Requiere&#xA;&#xA;0 0 = 0&#xA;0 1 = 1&#xA;1 0 = 0&#xA;1 1 = 0&#xA;" Condition="[LoginExist]" DisplayName="If LoginExist" sap:VirtualizedContainerService.HintSize="355,51" sap2010:WorkflowViewState.IdRef="If_16">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                  <x:Boolean x:Key="IsAnnotationDocked">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <If.Then>
+                <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_49" Message="[&quot;NO se Requiere login Linkedin&quot;]" />
+              </If.Then>
+              <If.Else>
+                <Sequence DisplayName="Login linkedin" sap:VirtualizedContainerService.HintSize="376,335" sap2010:WorkflowViewState.IdRef="Sequence_77">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                      <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_50" Message="[&quot;Requiere login Linkedin&quot;]" />
+                  <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke I-1.0_LinkedIn_Login workflow" sap:VirtualizedContainerService.HintSize="334,112" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_75" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Apps\Linkedin\I-1.0_LinkedIn_Login.xaml">
+                    <ui:InvokeWorkflowFile.Arguments>
+                      <InArgument x:TypeArguments="x:String" x:Key="In_StrURL">https://www.linkedin.com/checkpoint/lg/sign-in-another-account</InArgument>
+                      <InArgument x:TypeArguments="x:String" x:Key="in_StrUser_LinkedIn">[in_TransactionItem("EmailRed").ToString]</InArgument>
+                      <InArgument x:TypeArguments="x:String" x:Key="in_StrPass_LinkedIn">[New System.Net.NetworkCredential(String.Empty,in_TransactionItem("ClaveRed").ToString).Password]</InArgument>
+                      <OutArgument x:TypeArguments="x:Boolean" x:Key="Out_LoginExist">[LoginExist]</OutArgument>
+                      <InArgument x:TypeArguments="scg:Dictionary(x:String, x:Object)" x:Key="in_Config">[in_Config]</InArgument>
+                    </ui:InvokeWorkflowFile.Arguments>
+                  </ui:InvokeWorkflowFile>
+                </Sequence>
+              </If.Else>
+            </If>
+            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="355,91" sap2010:WorkflowViewState.IdRef="LogMessage_66" Level="Warn" Message="[&quot;Actualizar Campo UltimaVezContactar Fecha Actual y  CantidadContactadosDia a 0 &quot;]" />
+            <ui:MultipleAssign DisplayName="Multiple Assign" sap:VirtualizedContainerService.HintSize="355,98" sap2010:WorkflowViewState.IdRef="MultipleAssign_8">
+              <ui:MultipleAssign.AssignOperations>
+                <scg:List x:TypeArguments="ui:AssignOperation" Capacity="4">
+                  <ui:AssignOperation sap2010:WorkflowViewState.IdRef="AssignOperation_17">
+                    <ui:AssignOperation.To>
+                      <OutArgument x:TypeArguments="x:String">[UltimaVezContactar]</OutArgument>
+                    </ui:AssignOperation.To>
+                    <ui:AssignOperation.Value>
+                      <InArgument x:TypeArguments="x:String">[now.tostring(“dd/MM/yyyy”)]</InArgument>
+                    </ui:AssignOperation.Value>
+                  </ui:AssignOperation>
+                </scg:List>
+              </ui:MultipleAssign.AssignOperations>
+            </ui:MultipleAssign>
+            <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke 3.0.0_UpdateDT_BD_SQL workflow" sap:VirtualizedContainerService.HintSize="355,112" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_78" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\3.0.0_UpdateDT_BD_SQL.xaml">
+              <ui:InvokeWorkflowFile.Arguments>
+                <InArgument x:TypeArguments="x:String" x:Key="in_WhereID">[in_TransactionItem("Id").ToString]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_ColumnEstado">UltimaVezContactar</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnEstado">[UltimaVezContactar]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_ColumnPagina">ValidarNuevos</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnPagina">1</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_TablaSql">Usuarios</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_Set">["Pagina" + " = '" + "1" + "', " + "Estado" + " = '" + "Buscando"]</InArgument>
+              </ui:InvokeWorkflowFile.Arguments>
+            </ui:InvokeWorkflowFile>
+            <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" sap2010:Annotation.AnnotationText="-extraer la cantidad de contactos.&#xA;Validar si cantidad contactos usuario linkedin &gt; cantidad de MQL&#xA;• El mensaje para enviar....&#xA;-Extraer nombres&#xA;-enviar mensaje (&#xA;-Select resultados &#xA;-Hacer update x nombre y por usuario FK&#xA;SELECT Id, Mensaje FROM [dbo].[Resultados] WHERE Nombre LIKE '%Jorge Escobar%' AND UsuarioFk = 'aba18686-363f-48b9-b3b0-4c9f1b6c062f'&#xA;return ID&#xA;UPDATE [dbo].[Resultados] Set Estado = 'Conectado' WHERE Id = 'return ID'" DisplayName="Invoke P-9.0_GetNewContacts workflow" sap:VirtualizedContainerService.HintSize="355,334" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_79" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Apps\Linkedin\P-9.0_GetNewContacts.xaml">
+              <ui:InvokeWorkflowFile.Arguments>
+                <InArgument x:TypeArguments="x:String" x:Key="in_UrlContactos">https://www.linkedin.com/mynetwork/invite-connect/connections/</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_CantidadContactosAnterior">[in_TransactionItem("NumeroContactos").ToString]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_UsuarioFK">[in_TransactionItem("Id").ToString]</InArgument>
+                <OutArgument x:TypeArguments="x:String" x:Key="out_CantidadContactosActual">[CantidadContactosActual]</OutArgument>
+              </ui:InvokeWorkflowFile.Arguments>
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
+                  <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+            </ui:InvokeWorkflowFile>
+            <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="355,91" sap2010:WorkflowViewState.IdRef="LogMessage_67" Message="[&quot;Actualizar contactos Actuales al el usuario, CantidadContactosActual:&quot;+CantidadContactosActual.Replace(&quot; &quot;, &quot;&quot;)]" />
+            <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke 3.0.0_UpdateDT_BD_SQLByBusqueda workflow" sap:VirtualizedContainerService.HintSize="355,112" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_81" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Utils\3.0.0_UpdateDT_BD_SQLByBusqueda.xaml">
+              <ui:InvokeWorkflowFile.Arguments>
+                <InArgument x:TypeArguments="x:String" x:Key="in_ColumnEstado">
+                  <Literal x:TypeArguments="x:String">NumeroContactos</Literal>
+                </InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_ValueColumnEstado">
+                  <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="Cint(CantidadContactosActual).ToString" />
+                </InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_TablaSql">
+                  <Literal x:TypeArguments="x:String">Usuarios</Literal>
+                </InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_WhereIDBusquedaFK">
+                  <mva:VisualBasicValue x:TypeArguments="x:String" ExpressionText="in_TransactionItem(&quot;Id&quot;).ToString" />
+                </InArgument>
+              </ui:InvokeWorkflowFile.Arguments>
+            </ui:InvokeWorkflowFile>
+            <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke P-9.1_GetNewRespuestas workflow" sap:VirtualizedContainerService.HintSize="355,112" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_80" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Apps\Linkedin\P-9.1_GetNewRespuestas.xaml">
+              <ui:InvokeWorkflowFile.Arguments>
+                <InArgument x:TypeArguments="x:String" x:Key="in_UsuarioFK">[in_TransactionItem("Id").ToString]</InArgument>
+                <InArgument x:TypeArguments="x:String" x:Key="in_UrlMensajesSinLeer">https://www.linkedin.com/messaging/thread/2-YzhiMjg3ZTEtN2VlNS00MGQ2LThjYmYtOTU2MDE4MDUyNjNiXzAxMA==/?filter=unread</InArgument>
+              </ui:InvokeWorkflowFile.Arguments>
+            </ui:InvokeWorkflowFile>
+          </Sequence>
+        </If.Else>
+      </If>
+      <ui:CommentOut DisplayName="Comment Out" sap:VirtualizedContainerService.HintSize="642,51" sap2010:WorkflowViewState.IdRef="CommentOut_26">
+        <ui:CommentOut.Body>
+          <Sequence DisplayName="Ignored Activities" sap:VirtualizedContainerService.HintSize="360,344" sap2010:WorkflowViewState.IdRef="Sequence_92">
+            <sap:WorkflowViewStateService.ViewState>
+              <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+              </scg:Dictionary>
+            </sap:WorkflowViewStateService.ViewState>
+            <Assign sap:VirtualizedContainerService.HintSize="318,60" sap2010:WorkflowViewState.IdRef="Assign_42">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:Boolean">[Boo_UltimaVezContactar]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:Boolean">True</InArgument>
+              </Assign.Value>
+            </Assign>
+            <Assign sap:VirtualizedContainerService.HintSize="318,60" sap2010:WorkflowViewState.IdRef="Assign_43">
+              <Assign.To>
+                <OutArgument x:TypeArguments="x:Boolean">[Boo_ValidarNuevos]</OutArgument>
+              </Assign.To>
+              <Assign.Value>
+                <InArgument x:TypeArguments="x:Boolean">[in_TransactionItem("ValidarNuevos").ToString = "0"]</InArgument>
+              </Assign.Value>
+            </Assign>
+            <If Condition="[Boo_CantidadContactadosDia and Boo_UltimaVezContactar]" DisplayName="If Boo_CantidadContactadosDia and Boo_UltimaVezContactar" sap:VirtualizedContainerService.HintSize="318,52" sap2010:WorkflowViewState.IdRef="If_22">
+              <sap:WorkflowViewStateService.ViewState>
+                <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                  <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+                  <x:Boolean x:Key="IsPinned">False</x:Boolean>
+                </scg:Dictionary>
+              </sap:WorkflowViewStateService.ViewState>
+              <If.Then>
+                <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_64" Level="Info" Message="[&quot;SI Cumple con las Condiciones de cantidad contactos por dia:&quot;+CantidadContactadosDia.ToString]" />
+              </If.Then>
+              <If.Else>
+                <Sequence sap:VirtualizedContainerService.HintSize="376,183" sap2010:WorkflowViewState.IdRef="Sequence_91">
+                  <sap:WorkflowViewStateService.ViewState>
+                    <scg:Dictionary x:TypeArguments="x:String, x:Object">
+                      <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+                    </scg:Dictionary>
+                  </sap:WorkflowViewStateService.ViewState>
+                  <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,91" sap2010:WorkflowViewState.IdRef="LogMessage_65" Level="Warn" Message="[&quot;NO Cumple con las Condiciones de cantidad contactos por dia:&quot;+CantidadContactadosDia.ToString]" />
+                </Sequence>
+              </If.Else>
+            </If>
+          </Sequence>
+        </ui:CommentOut.Body>
+        <sap:WorkflowViewStateService.ViewState>
+          <scg:Dictionary x:TypeArguments="x:String, x:Object">
+            <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+            <x:Boolean x:Key="IsPinned">False</x:Boolean>
+          </scg:Dictionary>
+        </sap:WorkflowViewStateService.ViewState>
+      </ui:CommentOut>
+    </Sequence>
+    <Sequence DisplayName="Cerrar session y Finalizar Procesos para Iniciar" sap:VirtualizedContainerService.HintSize="1370,66" sap2010:WorkflowViewState.IdRef="Sequence_64">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">False</x:Boolean>
+          <x:Boolean x:Key="IsPinned">False</x:Boolean>
+        </scg:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="334,93" sap2010:WorkflowViewState.IdRef="LogMessage_41" Message="[&quot;Cerrar session y Finalizar Procesos para Iniciar&quot;]" />
+      <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke CloseAllApplications workflow" sap:VirtualizedContainerService.HintSize="334,113" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_59" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Framework\CloseAllApplications.xaml">
+        <ui:InvokeWorkflowFile.Arguments>
+          <scg:Dictionary x:TypeArguments="x:String, Argument" />
+        </ui:InvokeWorkflowFile.Arguments>
+      </ui:InvokeWorkflowFile>
+      <ui:InvokeWorkflowFile ArgumentsVariable="{x:Null}" ContinueOnError="{x:Null}" DisplayName="Invoke KillAllProcesses workflow" sap:VirtualizedContainerService.HintSize="334,113" sap2010:WorkflowViewState.IdRef="InvokeWorkflowFile_60" LogEntry="No" LogExit="No" UnSafe="False" WorkflowFileName="Framework\KillAllProcesses.xaml">
+        <ui:InvokeWorkflowFile.Arguments>
+          <scg:Dictionary x:TypeArguments="x:String, Argument" />
+        </ui:InvokeWorkflowFile.Arguments>
+      </ui:InvokeWorkflowFile>
+    </Sequence>
+    <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="1370,93" sap2010:WorkflowViewState.IdRef="LogMessage_42" Message="[&quot;Fin Process, para el usuario....&quot;+in_TransactionItem(&quot;Nombre&quot;).ToString]" />
+  </Sequence>
+</Activity>
